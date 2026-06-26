@@ -396,8 +396,11 @@
         </div>
       </div>
 
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Display Name</div>
       <input class="name-input" type="text" id="player-name" placeholder="Enter your name or display name..." maxlength="40" />
-      <input class="name-input" type="email" id="player-email" placeholder="Your Geotab email address (@geotab.com)..." />
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:4px;">Geotab Email <span style="color:#f87171;">*required for prize eligibility</span></div>
+      <input class="name-input" type="email" id="player-email" placeholder="yourname@geotab.com" />
+      <div id="start-error" style="color:#f87171;font-size:13px;margin-bottom:10px;display:none;text-align:center;"></div>
       <button class="btn-start" onclick="startGame()">Let's Play! 🎉</button>
     </div>
   </div>
@@ -836,18 +839,25 @@ function shuffle(arr) {
 
 function startGame() {
   const nameInput = document.getElementById('player-name').value.trim();
+  const emailInput = document.getElementById('player-email').value.trim();
+  const errDiv = document.getElementById('start-error');
+  document.getElementById('player-name').style.borderColor = '';
+  document.getElementById('player-email').style.borderColor = '';
+  errDiv.style.display = 'none';
   if (!nameInput) {
     document.getElementById('player-name').style.borderColor = '#f87171';
-    document.getElementById('player-name').placeholder = 'Please enter your name first!';
+    errDiv.textContent = 'Please enter your name to continue.';
+    errDiv.style.display = 'block';
+    return;
+  }
+  if (!emailInput) {
+    document.getElementById('player-email').style.borderColor = '#f87171';
+    errDiv.textContent = 'Please enter your Geotab email — required for prize eligibility.';
+    errDiv.style.display = 'block';
     return;
   }
   playerName = nameInput;
-  playerEmail = document.getElementById('player-email').value.trim();
-  if (!playerEmail) {
-    document.getElementById('player-email').style.borderColor = '#f87171';
-    document.getElementById('player-email').placeholder = 'Please enter your Geotab email!';
-    return;
-  }
+  playerEmail = emailInput;
   currentQ = 0; score = 0; correct = 0; wrong = 0;
   shuffled = shuffle(QUESTIONS);
   showScreen('screen-question');
