@@ -361,6 +361,7 @@
     .card { padding: 24px; }
   }
 </style>
+<!-- v1782502314 -->
 </head>
 <body>
 
@@ -843,17 +844,15 @@ function startGame() {
   const errDiv = document.getElementById('start-error');
   document.getElementById('player-name').style.borderColor = '';
   document.getElementById('player-email').style.borderColor = '';
-  errDiv.style.display = 'none';
+  if (errDiv) errDiv.style.display = 'none';
   if (!nameInput) {
     document.getElementById('player-name').style.borderColor = '#f87171';
-    errDiv.textContent = 'Please enter your name to continue.';
-    errDiv.style.display = 'block';
+    if (errDiv) { errDiv.textContent = 'Please enter your name to continue.'; errDiv.style.display = 'block'; }
     return;
   }
   if (!emailInput) {
     document.getElementById('player-email').style.borderColor = '#f87171';
-    errDiv.textContent = 'Please enter your Geotab email — required for prize eligibility.';
-    errDiv.style.display = 'block';
+    if (errDiv) { errDiv.textContent = 'Please enter your Geotab email — required for prize eligibility.'; errDiv.style.display = 'block'; }
     return;
   }
   playerName = nameInput;
