@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏳️‍🌈 Geotab's Loud and Proud Trivia</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
+
+  :root {
+    --red: #E40303; --orange: #FF8C00; --yellow: #FFED00;
+    --green: #008026; --blue: #004DFF; --violet: #750787;
+    --pink: #FF76A4; --light-blue: #26CEFF; --white: #FFFFFF;
+    --brown: #613915; --black: #000000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a0533 0%, #0d1b6e 50%, #1a0533 100%);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  .confetti-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 1000; overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute; width: 10px; height: 10px;
+    animation: confettiFall linear forwards;
+    opacity: 0;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .stars {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+
+  .star {
+    position: absolute; border-radius: 50%;
+    animation: twinkle ease-in-out infinite alternate;
+    background: rgba(255,255,255,0.8);
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1.2); }
+  }
+
+  .container {
+    max-width: 820px; margin: 0 auto; padding: 20px;
+    position: relative; z-index: 1;
+  }
+
+  /* SCREENS */
+  .screen { display: none; animation: fadeIn 0.5s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RAINBOW BAR */
+  .rainbow-bar {
+    height: 8px;
+    background: linear-gradient(to right,
+      var(--red), var(--orange), var(--yellow),
+      var(--green), var(--blue), var(--violet));
+    border-radius: 4px;
+    margin-bottom: 30px;
+  }
+
+  /* CARD */
+  .card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  /* INTRO SCREEN */
+  .intro-emoji { font-size: 80px; text-align: center; margin-bottom: 10px; animation: bounce 2s infinite; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .intro-title {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(to right, var(--pink), var(--light-blue), var(--yellow), var(--pink));
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  @keyframes shimmer {
+    from { background-position: 0% 50%; }
+    to { background-position: 200% 50%; }
+  }
+
+  .intro-subtitle {
+    text-align: center; color: rgba(255,255,255,0.75);
+    font-size: 16px; margin-bottom: 30px;
+  }
+
+  .info-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 15px; margin: 25px 0;
+  }
+
+  .info-box {
+    background: rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 16px;
+    text-align: center; border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .info-box .icon { font-size: 28px; margin-bottom: 6px; }
+  .info-box .label { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+  .info-box .value { font-size: 20px; font-weight: 700; color: var(--yellow); }
+
+  .name-input {
+    width: 100%; padding: 14px 20px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px; color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px; margin-bottom: 20px;
+    transition: border-color 0.3s;
+  }
+
+  .name-input:focus { outline: none; border-color: var(--pink); }
+  .name-input::placeholder { color: rgba(255,255,255,0.4); }
+
+  .btn-start {
+    width: 100%; padding: 18px;
+    background: linear-gradient(135deg, #FF76A4, #a855f7);
+    border: none; border-radius: 14px;
+    color: #fff; font-family: 'Poppins', sans-serif;
+    font-size: 18px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,118,164,0.4); }
+
+  /* PROGRESS */
+  .progress-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 16px;
+  }
+
+  .q-counter { font-size: 14px; color: rgba(255,255,255,0.6); }
+  .score-badge {
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: #000; font-weight: 700; font-size: 14px;
+    padding: 6px 16px; border-radius: 20px;
+  }
+
+  .progress-bar-wrap {
+    height: 6px; background: rgba(255,255,255,0.1);
+    border-radius: 3px; margin-bottom: 28px; overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(to right, var(--pink), var(--light-blue));
+    transition: width 0.5s ease;
+  }
+
+  /* DIFFICULTY BADGE */
+  .diff-badge {
+    display: inline-block; padding: 3px 12px;
+    border-radius: 20px; font-size: 11px;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 14px;
+  }
+
+  .diff-easy { background: rgba(0,128,38,0.3); color: #4ade80; border: 1px solid #4ade80; }
+  .diff-medium { background: rgba(255,140,0,0.3); color: #fbbf24; border: 1px solid #fbbf24; }
+  .diff-hard { background: rgba(228,3,3,0.3); color: #f87171; border: 1px solid #f87171; }
+
+  /* CATEGORY */
+  .q-category {
+    font-size: 12px; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* QUESTION */
+  .q-text {
+    font-size: clamp(17px, 2.5vw, 21px);
+    font-weight: 700; line-height: 1.4;
+    margin-bottom: 28px; color: #fff;
+  }
+
+  /* OPTIONS */
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .option-btn {
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.07);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px; color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.25s;
+    text-align: left; line-height: 1.4;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.14);
+    border-color: var(--light-blue);
+    transform: translateY(-2px);
+  }
+
+  .option-btn.correct {
+    background: rgba(0,128,38,0.3);
+    border-color: #4ade80; color: #4ade80;
+    animation: pulse-green 0.5s ease;
+  }
+
+  .option-btn.wrong {
+    background: rgba(228,3,3,0.2);
+    border-color: #f87171; color: #f87171;
+  }
+
+  .option-btn.reveal {
+    background: rgba(0,128,38,0.15);
+    border-color: rgba(74,222,128,0.4); color: rgba(74,222,128,0.7);
+  }
+
+  @keyframes pulse-green {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+
+  .option-label {
+    display: inline-block; width: 24px; height: 24px;
+    background: rgba(255,255,255,0.1); border-radius: 6px;
+    text-align: center; line-height: 24px;
+    font-weight: 700; font-size: 12px;
+    margin-right: 8px; flex-shrink: 0;
+  }
+
+  /* FEEDBACK */
+  .feedback {
+    margin-top: 20px; padding: 16px 20px;
+    border-radius: 14px; font-size: 14px;
+    line-height: 1.6; display: none;
+  }
+
+  .feedback.correct { background: rgba(0,128,38,0.2); border: 1px solid rgba(74,222,128,0.3); }
+  .feedback.wrong { background: rgba(228,3,3,0.15); border: 1px solid rgba(248,113,113,0.3); }
+
+  .feedback-emoji { font-size: 22px; margin-right: 8px; }
+
+  .btn-next {
+    width: 100%; margin-top: 20px; padding: 15px;
+    background: linear-gradient(135deg, #a855f7, #3b82f6);
+    border: none; border-radius: 12px;
+    color: #fff; font-family: 'Poppins', sans-serif;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer; display: none;
+    transition: all 0.3s;
+  }
+
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(168,85,247,0.4); }
+
+  /* RESULTS */
+  .result-trophy { font-size: 80px; text-align: center; margin-bottom: 10px; }
+  .result-name { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+  .result-score-big {
+    text-align: center; font-size: 72px; font-weight: 900;
+    background: linear-gradient(to right, var(--yellow), var(--orange));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+
+  .result-score-label { text-align: center; color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 30px; }
+
+  .result-stats {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 15px; margin-bottom: 30px;
+  }
+
+  .stat-box {
+    background: rgba(255,255,255,0.07);
+    border-radius: 16px; padding: 16px; text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .stat-box .s-val { font-size: 28px; font-weight: 800; }
+  .stat-box .s-lbl { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+
+  .result-message {
+    text-align: center; font-size: 16px;
+    color: rgba(255,255,255,0.8); margin-bottom: 25px;
+    line-height: 1.6;
+  }
+
+  .share-section {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px; padding: 20px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  .share-code {
+    font-size: 32px; font-weight: 900;
+    color: var(--yellow); letter-spacing: 4px;
+    font-family: monospace;
+  }
+
+  .share-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .btn-play-again {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, var(--pink), var(--violet));
+    border: none; border-radius: 12px;
+    color: #fff; font-family: 'Poppins', sans-serif;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s;
+  }
+
+  .btn-play-again:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(117,7,135,0.4); }
+
+
+  /* QUESTION MEDIA */
+  .q-media {
+    width: 100%; max-height: 280px; overflow: hidden;
+    border-radius: 16px; margin-bottom: 20px;
+    background: rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .q-media img, .q-media-gif {
+    width: 100%; height: 280px; object-fit: cover;
+    border-radius: 16px; display: block;
+  }
+
+  .q-media-gif {
+    object-fit: contain; background: rgba(0,0,0,0.5);
+  }
+
+  .q-media-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.55);
+    color: rgba(255,255,255,0.8);
+    font-size: 11px; padding: 6px 12px;
+    border-radius: 0 0 16px 16px;
+    text-align: center;
+  }
+
+  @media (max-width: 500px) {
+    .options { grid-template-columns: 1fr; }
+    .info-grid, .result-stats { grid-template-columns: repeat(2,1fr); }
+    .card { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="confetti-container" id="confetti"></div>
+
+<div class="container">
+
+  <!-- INTRO SCREEN -->
+  <div class="screen active" id="screen-intro">
+    <div class="rainbow-bar"></div>
+    <div class="card">
+      <div class="intro-emoji">🎤</div>
+      <h1 class="intro-title">Geotab's Loud and Proud Trivia 🎤</h1>
+      <p class="intro-subtitle">2SLGBTQIA+ &amp; Allies ERG | Test your global knowledge!<br>Top scorers win prizes — scores are recorded automatically 🏆✨</p>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="icon">❓</div>
+          <div class="value">20</div>
+          <div class="label">Questions</div>
+        </div>
+        <div class="info-box">
+          <div class="icon">🌍</div>
+          <div class="value">Global</div>
+          <div class="label">Focus</div>
+        </div>
+        <div class="info-box">
+          <div class="icon">⭐</div>
+          <div class="value">100</div>
+          <div class="label">Max Score</div>
+        </div>
+      </div>
+
+      <input class="name-input" type="text" id="player-name" placeholder="Enter your name or display name..." maxlength="40" />
+      <input class="name-input" type="email" id="player-email" placeholder="Your Geotab email address (@geotab.com)..." />
+      <button class="btn-start" onclick="startGame()">Let's Play! 🎉</button>
+    </div>
+  </div>
+
+  <!-- QUESTION SCREEN -->
+  <div class="screen" id="screen-question">
+    <div class="rainbow-bar"></div>
+    <div class="card">
+      <div class="progress-header">
+        <span class="q-counter" id="q-counter">Question 1 of 20</span>
+        <span class="score-badge" id="score-live">Score: 0</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+
+      <div class="q-media" id="q-media" style="display:none"></div>
+      <div class="q-category" id="q-category"></div>
+      <div class="diff-badge" id="q-diff"></div>
+      <div class="q-text" id="q-text"></div>
+
+      <div class="options" id="options-grid"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="screen-results">
+    <div class="rainbow-bar"></div>
+    <div class="card">
+      <div class="result-trophy" id="result-trophy">🏆</div>
+      <div class="result-name" id="result-name"></div>
+      <div class="result-score-big" id="result-score-big"></div>
+      <div class="result-score-label">out of 100 points</div>
+
+      <div class="result-stats">
+        <div class="stat-box">
+          <div class="s-val" id="stat-correct" style="color:#4ade80">0</div>
+          <div class="s-lbl">Correct</div>
+        </div>
+        <div class="stat-box">
+          <div class="s-val" id="stat-wrong" style="color:#f87171">0</div>
+          <div class="s-lbl">Incorrect</div>
+        </div>
+        <div class="stat-box">
+          <div class="s-val" id="stat-pct" style="color:#fbbf24">0%</div>
+          <div class="s-lbl">Accuracy</div>
+        </div>
+      </div>
+
+      <div class="result-message" id="result-message"></div>
+
+      <div class="share-section">
+        <div class="share-label">Your score has been submitted to the leaderboard</div>
+        <div id="submit-status" style="font-size:13px;color:#fbbf24;margin-bottom:10px">⏳ Preparing your score submission...</div>
+        <button id="submit-btn" style="display:none;margin-bottom:12px;padding:12px 24px;background:linear-gradient(135deg,#4ade80,#22c55e);border:none;border-radius:10px;color:#000;font-family:Poppins,sans-serif;font-size:15px;font-weight:700;cursor:pointer;">📋 Submit My Score to Leaderboard</button>
+        <div class="share-code" id="share-code"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:8px">Screenshot your score code &amp; share in the ERG chat 🎁</div>
+        <a href="https://docs.google.com/spreadsheets/d/1U-b7rebM3gC8wmObUlPdLKNOaqF-_mSmAta1CtHSr-I/edit" target="_blank" style="display:inline-block;margin-top:12px;color:#26CEFF;font-size:13px;font-weight:600;text-decoration:none;">📊 View the Leaderboard →</a>
+      </div>
+
+      <button class="btn-play-again" onclick="resetGame()">Play Again 🔄</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QUESTION_MEDIA = [
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Stonewall_Inn_2015.jpg/640px-Stonewall_Inn_2015.jpg",
+    "alt": "The Stonewall Inn, Greenwich Village, New York City",
+    "caption": "The Stonewall Inn, Greenwich Village, NYC"
+  },
+  {
+    "type": "gif",
+    "url": "https://media.giphy.com/media/l0HlHFRbmaZtBRhXG/giphy.gif",
+    "alt": "Pride celebration rainbow confetti",
+    "caption": "\ud83c\udf89 First in the world!"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Gay_flag.svg/640px-Gay_flag.svg.png",
+    "alt": "Original 8-stripe rainbow Pride flag by Gilbert Baker",
+    "caption": "Gilbert Baker's original 1978 Pride flag"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Transgender_Pride_flag.svg/640px-Transgender_Pride_flag.svg.png",
+    "alt": "Transgender Pride flag",
+    "caption": "\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f"
+  },
+  {
+    "type": "gif",
+    "url": "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyE/giphy.gif",
+    "alt": "Pride parade celebration",
+    "caption": "World Pride \u2014 first held in Rome, 2000"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Marsha_P._Johnson_at_Christopher_Street_Pride%2C_1973.jpg/480px-Marsha_P._Johnson_at_Christopher_Street_Pride%2C_1973.jpg",
+    "alt": "Marsha P. Johnson at Christopher Street Pride, 1973",
+    "caption": "Marsha P. Johnson, Christopher Street Pride, 1973"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/IDAHOT_logo.svg/640px-IDAHOT_logo.svg.png",
+    "alt": "IDAHOBIT International Day Against Homophobia Transphobia Biphobia logo",
+    "caption": "IDAHOBIT \u2014 observed May 17 each year"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/World_same-sex_marriage_map.svg/640px-World_same-sex_marriage_map.svg.png",
+    "alt": "World map showing countries where same-sex marriage is legal",
+    "caption": "Countries where same-sex marriage is legal (green)"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Bayard_Rustin_1964.jpg/480px-Bayard_Rustin_1964.jpg",
+    "alt": "Bayard Rustin, 1964",
+    "caption": "Bayard Rustin, chief organizer of the 1963 March on Washington"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/LGBTQ%2B_rainbow_flag_Quasar_%22Progress%22_variant.svg/640px-LGBTQ%2B_rainbow_flag_Quasar_%22Progress%22_variant.svg.png",
+    "alt": "Progress Pride Flag by Daniel Quasar, 2018",
+    "caption": "The Progress Pride Flag \u2014 Daniel Quasar, 2018"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/World_laws_pertaining_to_homosexual_relationships_and_expression.svg/640px-World_laws_pertaining_to_homosexual_relationships_and_expression.svg.png",
+    "alt": "World map of laws regarding homosexuality",
+    "caption": "Global map of LGBTQ+ legal status (ILGA World, 2024)"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Pink_triangle.svg/480px-Pink_triangle.svg.png",
+    "alt": "Pink triangle symbol reclaimed as LGBTQ+ pride symbol",
+    "caption": "The reclaimed pink triangle \u2014 from oppression to pride"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Audre_Lorde.jpg/480px-Audre_Lorde.jpg",
+    "alt": "Audre Lorde, poet and activist",
+    "caption": "Audre Lorde (1934\u20131992) \u2014 poet, essayist, activist"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Flag_of_Uganda.svg/640px-Flag_of_Uganda.svg.png",
+    "alt": "Flag of Uganda",
+    "caption": "Uganda's 2023 Anti-Homosexuality Act drew global condemnation"
+  },
+  {
+    "type": "gif",
+    "url": "https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif",
+    "alt": "Drag queen performing",
+    "caption": "Drag \u2014 a centuries-old performance art form \ud83d\udc51"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Flag_of_the_Republic_of_China.svg/640px-Flag_of_the_Republic_of_China.svg.png",
+    "alt": "Flag of Taiwan",
+    "caption": "Taiwan \u2014 first in Asia to legalize same-sex marriage, 2019"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_India.svg/640px-Flag_of_India.svg.png",
+    "alt": "Flag of India",
+    "caption": "Hijra communities have been recognized as a third gender across South Asia"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Harvey_Milk_1977.jpg/480px-Harvey_Milk_1977.jpg",
+    "alt": "Harvey Milk, 1977",
+    "caption": "Harvey Milk \u2014 elected to San Francisco Board of Supervisors, 1977"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Flag_of_Indonesia.svg/640px-Flag_of_Indonesia.svg.png",
+    "alt": "Flag of Indonesia \u2014 where Yogyakarta Principles were adopted",
+    "caption": "Yogyakarta, Indonesia \u2014 site of the 2006 Principles adoption"
+  },
+  {
+    "type": "img",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Two_Spirit_pride_flag.svg/640px-Two_Spirit_pride_flag.svg.png",
+    "alt": "Two-Spirit Pride Flag",
+    "caption": "The Two-Spirit Pride Flag \ud83e\udeb6"
+  }
+];
+
+const QUESTIONS = [
+  // EASY
+  {
+    category: "History & Milestones",
+    difficulty: "easy",
+    q: "The Stonewall Inn uprising of 1969, a pivotal moment in LGBTQ+ history, took place in which city?",
+    opts: ["San Francisco, USA", "New York City, USA", "London, UK", "Toronto, Canada"],
+    a: 1,
+    fact: "The Stonewall Inn in Greenwich Village, New York City, was the site of a series of spontaneous protests by the LGBTQ+ community in June 1969, widely considered the catalyst for the modern LGBTQ+ rights movement."
+  },
+  {
+    category: "Global Pride",
+    difficulty: "easy",
+    q: "Which country became the first in the world to legalize same-sex marriage nationally?",
+    opts: ["Canada", "Sweden", "Netherlands", "South Africa"],
+    a: 2,
+    fact: "The Netherlands became the first country to legalize same-sex marriage on April 1, 2001, granting same-sex couples the same rights as heterosexual couples."
+  },
+  {
+    category: "Symbols & Flags",
+    difficulty: "easy",
+    q: "The original Pride rainbow flag was designed by which artist in 1978?",
+    opts: ["Andy Warhol", "Keith Haring", "Gilbert Baker", "Harvey Milk"],
+    a: 2,
+    fact: "Gilbert Baker, an American artist and gay rights activist, designed the original rainbow flag in 1978 for the San Francisco Gay Freedom Day Parade. Each color carried a specific meaning, including life, healing, sunlight, nature, harmony, and spirit."
+  },
+  {
+    category: "Rights & Law",
+    difficulty: "easy",
+    q: "What does the 'T' stand for in 2SLGBTQIA+?",
+    opts: ["Tolerant", "Transgender", "Transitional", "Traditional"],
+    a: 1,
+    fact: "The 'T' stands for Transgender — an umbrella term for people whose gender identity differs from the sex they were assigned at birth. The '2S' at the beginning stands for Two-Spirit, an Indigenous identity that precedes European colonization."
+  },
+  {
+    category: "Global Pride",
+    difficulty: "easy",
+    q: "World Pride is a global LGBTQ+ event held every few years. Which city hosted the very first World Pride in 2000?",
+    opts: ["New York City", "Amsterdam", "Rome", "Sydney"],
+    a: 2,
+    fact: "Rome, Italy hosted the first World Pride in 2000 — though it faced significant political opposition at the time. World Pride has since been held in cities including Jerusalem, London, Toronto, New York City, Copenhagen, and Sydney."
+  },
+  {
+    category: "Trailblazers",
+    difficulty: "easy",
+    q: "Marsha P. Johnson, a prominent activist at Stonewall, identified as which of the following?",
+    opts: ["A gay cisgender man", "A transgender woman and drag performer", "A lesbian", "A bisexual activist"],
+    a: 1,
+    fact: "Marsha P. Johnson was a Black transgender woman, drag performer, and activist who was a key figure in the Stonewall uprising. She co-founded STAR (Street Transvestite Action Revolutionaries) with Sylvia Rivera to support homeless LGBTQ+ youth."
+  },
+  {
+    category: "History & Milestones",
+    difficulty: "easy",
+    q: "International Day Against Homophobia, Biphobia, and Transphobia (IDAHOBIT) is observed annually on which date?",
+    opts: ["June 28", "May 17", "October 11", "March 31"],
+    a: 1,
+    fact: "IDAHOBIT is observed on May 17 each year, chosen to commemorate the World Health Organization's decision to remove homosexuality from its International Classification of Diseases on May 17, 1990."
+  },
+  // MEDIUM
+  {
+    category: "Global Rights",
+    difficulty: "medium",
+    q: "As of 2024, approximately how many countries around the world have legalized same-sex marriage?",
+    opts: ["Around 20", "Around 35", "Around 50", "Around 70"],
+    a: 1,
+    fact: "As of 2024, approximately 35 countries have legalized same-sex marriage, representing roughly 1.4 billion people or about 17% of the world's population. The most recent major additions include Taiwan (2019), Switzerland (2022), and Slovenia (2022)."
+  },
+  {
+    category: "Trailblazers",
+    difficulty: "medium",
+    q: "Bayard Rustin was a key organizer of the 1963 March on Washington — and was openly gay. Which civil rights leader did he work closely with?",
+    opts: ["Malcolm X", "Martin Luther King Jr.", "John Lewis", "Medgar Evers"],
+    a: 1,
+    fact: "Bayard Rustin was the chief organizer of the 1963 March on Washington and a close advisor to Martin Luther King Jr. Despite his crucial role, he was often pushed to the background because of his sexuality. President Obama posthumously awarded him the Presidential Medal of Freedom in 2013."
+  },
+  {
+    category: "Culture & Arts",
+    difficulty: "medium",
+    q: "Which of the following describes the meaning of the Progress Pride Flag, created by Daniel Quasar in 2018?",
+    opts: [
+      "It replaced all previous flags with a single universal symbol",
+      "It adds a chevron with black, brown, and trans stripes to center BIPOC and trans communities",
+      "It represents the 6 core values of the LGBTQ+ movement",
+      "It was designed to be visible to colourblind individuals"
+    ],
+    a: 1,
+    fact: "Daniel Quasar redesigned the Progress Pride Flag in 2018, adding a chevron featuring black and brown stripes (representing BIPOC LGBTQ+ people) alongside the transgender colors (pink, white, and blue). The forward-pointing arrow represents the progress still needed."
+  },
+  {
+    category: "Global Rights",
+    difficulty: "medium",
+    q: "Same-sex activity is still criminalized in approximately how many countries as of 2024?",
+    opts: ["Around 15", "Around 30", "Around 60", "Around 100"],
+    a: 2,
+    fact: "As of 2024, approximately 60 countries still criminalize same-sex relationships. In several of these countries, penalties can include imprisonment, corporal punishment, or even the death penalty. ILGA World (International Lesbian, Gay, Bisexual, Trans and Intersex Association) publishes annual data on this."
+  },
+  {
+    category: "History & Milestones",
+    difficulty: "medium",
+    q: "The pink triangle — now a symbol of gay pride — originated as a badge forced on which group during the Holocaust?",
+    opts: ["Jewish prisoners", "Political prisoners", "Gay men in Nazi concentration camps", "Romani people"],
+    a: 2,
+    fact: "Gay men in Nazi concentration camps were forced to wear downward-pointing pink triangles. In the 1970s, activists reclaimed the symbol — inverting it to point upward — as a symbol of gay pride and remembrance. It became widely associated with the AIDS activism of the 1980s."
+  },
+  {
+    category: "Trailblazers",
+    difficulty: "medium",
+    q: "Audre Lorde, a Black lesbian poet and activist, is famous for which widely quoted statement?",
+    opts: [
+      "'We are all different, which is the greatest gift.'",
+      "'It is not our differences that divide us. It is our inability to recognize, accept, and celebrate those differences.'",
+      "'Love is love is love.'",
+      "'Silence = Death.'"
+    ],
+    a: 1,
+    fact: "Audre Lorde (1934–1992) was a Caribbean-American writer, feminist, and civil rights activist whose work explored themes of race, gender, and sexuality. Her essay 'The Master's Tools Will Never Dismantle the Master's House' remains a seminal text in intersectional theory."
+  },
+  {
+    category: "Global Rights",
+    difficulty: "medium",
+    q: "Which African country made global headlines in 2023 by passing one of the world's harshest anti-LGBTQ+ laws?",
+    opts: ["Kenya", "Nigeria", "Uganda", "Ethiopia"],
+    a: 2,
+    fact: "Uganda passed the Anti-Homosexuality Act in 2023, which included the death penalty for 'aggravated homosexuality.' The law drew widespread international condemnation. It was partially struck down by Uganda's Constitutional Court in 2024, though much of it remains in force."
+  },
+  {
+    category: "Culture & Arts",
+    difficulty: "medium",
+    q: "Drag as an art form has roots in many cultures globally. The word 'drag' in the context of performance is believed to have originated from which context?",
+    opts: [
+      "British theater slang for men playing female roles",
+      "A German term for cross-dressing performers",
+      "An American 1920s nightclub term",
+      "A Shakespearean stage direction"
+    ],
+    a: 0,
+    fact: "The term 'drag' is widely believed to originate from British theater, where men playing female roles would have their skirts dragging on the floor. Some sources suggest it was also used as a stage direction acronym ('Dressed As Girl'), though the theater etymology is most documented."
+  },
+  // HARD
+  {
+    category: "Global Rights",
+    difficulty: "hard",
+    q: "Taiwan became the first place in Asia to legalize same-sex marriage in 2019. What was the mechanism by which it was legalized?",
+    opts: [
+      "A national referendum passed by popular vote",
+      "The Legislative Yuan passed a bill directly",
+      "A Constitutional Court ruling required the legislature to act",
+      "The President issued an executive order"
+    ],
+    a: 2,
+    fact: "Taiwan's Constitutional Court ruled in 2017 that limiting marriage to opposite-sex couples was unconstitutional, giving the legislature two years to amend marriage laws. After two failed referendums, the Legislative Yuan passed the Enforcement Act for Judicial Yuan Interpretation No. 748 in May 2019, making Taiwan the first jurisdiction in Asia to legalize same-sex marriage."
+  },
+  {
+    category: "History & Milestones",
+    difficulty: "hard",
+    q: "The Hijra community in South Asia has been officially recognized as a third gender by which countries?",
+    opts: [
+      "India only",
+      "India, Pakistan, and Bangladesh",
+      "India, Pakistan, Bangladesh, and Nepal",
+      "All South Asian nations"
+    ],
+    a: 2,
+    fact: "India (2014), Pakistan (2018 — though legal protections have weakened), Bangladesh (2013), and Nepal (2015) have all officially recognized a third gender category. Hijras have a documented history in South Asia spanning over 4,000 years and hold cultural and religious significance in Hindu and Muslim traditions."
+  },
+  {
+    category: "Trailblazers",
+    difficulty: "hard",
+    q: "Harvey Milk, the first openly gay elected official in California history, was elected to which office in 1977?",
+    opts: [
+      "San Francisco Mayor",
+      "California State Assembly",
+      "San Francisco Board of Supervisors",
+      "US House of Representatives"
+    ],
+    a: 2,
+    fact: "Harvey Milk was elected to the San Francisco Board of Supervisors in 1977, becoming one of the first openly gay elected officials in the United States. He was assassinated in November 1978, along with Mayor George Moscone, by a former supervisor. He was posthumously awarded the Presidential Medal of Freedom in 2009."
+  },
+  {
+    category: "Global Rights",
+    difficulty: "hard",
+    q: "The Yogyakarta Principles, a landmark document in international human rights law, were adopted in which year and relate to which legal framework?",
+    opts: [
+      "2001 — applying UN conventions specifically to sexual orientation and gender identity",
+      "2006 — applying existing international human rights law to sexual orientation and gender identity",
+      "2010 — establishing new legally binding treaty obligations for LGBTQ+ rights",
+      "1994 — following the WHO's declassification of homosexuality"
+    ],
+    a: 1,
+    fact: "The Yogyakarta Principles were adopted in 2006 by a group of international human rights experts in Yogyakarta, Indonesia. They apply existing international human rights law to issues of sexual orientation and gender identity. Updated Yogyakarta Principles Plus 10 were released in 2017, adding gender expression and sex characteristics."
+  },
+  {
+    category: "Indigenous & Two-Spirit",
+    difficulty: "medium",
+    q: "The '2S' in 2SLGBTQIA+ stands for Two-Spirit. Which of the following best describes Two-Spirit identity?",
+    opts: [
+      "A term equivalent to being bisexual in Indigenous communities",
+      "A pan-Indigenous term for people who fulfill traditional roles of both genders, often holding spiritual significance",
+      "A modern term coined in the 1990s with no pre-colonial equivalent",
+      "An exclusively Canadian Indigenous term with no equivalent elsewhere"
+    ],
+    a: 1,
+    fact: "Two-Spirit is a pan-Indigenous, English-language umbrella term adopted in 1990 at the third Inter-tribal Native American/First Nations Gay and Lesbian conference in Winnipeg. It refers to people who fulfill traditional roles of both masculine and feminine genders and often hold special spiritual or ceremonial roles. It predates European colonization — each nation has its own specific cultural term and concept."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let playerName = '';
+let playerEmail = '';
+let answered = false;
+let shuffled = [];
+
+function initStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 3 + 1;
+    star.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      animation-duration:${Math.random()*3+2}s;
+      animation-delay:${Math.random()*3}s;
+    `;
+    container.appendChild(star);
+  }
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#FF76A4','#26CEFF','#FFED00','#4ade80','#a855f7','#FF8C00','#f87171'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const size = Math.random() * 12 + 6;
+      piece.style.cssText = `
+        left:${Math.random()*100}%;
+        width:${size}px; height:${size}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        border-radius:${Math.random()>0.5?'50%':'2px'};
+        animation-duration:${Math.random()*2+1.5}s;
+        animation-delay:${Math.random()*0.5}s;
+        transform:rotate(${Math.random()*360}deg);
+      `;
+      container.appendChild(piece);
+      setTimeout(() => piece.remove(), 3000);
+    }, Math.random() * 500);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  const nameInput = document.getElementById('player-name').value.trim();
+  if (!nameInput) {
+    document.getElementById('player-name').style.borderColor = '#f87171';
+    document.getElementById('player-name').placeholder = 'Please enter your name first!';
+    return;
+  }
+  playerName = nameInput;
+  playerEmail = document.getElementById('player-email').value.trim();
+  if (!playerEmail) {
+    document.getElementById('player-email').style.borderColor = '#f87171';
+    document.getElementById('player-email').placeholder = 'Please enter your Geotab email!';
+    return;
+  }
+  currentQ = 0; score = 0; correct = 0; wrong = 0;
+  shuffled = shuffle(QUESTIONS);
+  showScreen('screen-question');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function renderQuestion() {
+  const q = shuffled[currentQ];
+  answered = false;
+
+  document.getElementById('q-counter').textContent = `Question ${currentQ+1} of ${shuffled.length}`;
+  document.getElementById('score-live').textContent = `Score: ${score}`;
+  document.getElementById('progress-fill').style.width = `${(currentQ/shuffled.length)*100}%`;
+  document.getElementById('q-category').textContent = q.category;
+
+  // Render media
+  const mediaDiv = document.getElementById('q-media');
+  const m = QUESTION_MEDIA[currentQ];
+  if (m) {
+    mediaDiv.style.display = 'flex';
+    if (m.type === 'gif') {
+      mediaDiv.innerHTML = `<img class="q-media-gif" src="${m.url}" alt="${m.alt}" loading="lazy"><div class="q-media-caption">${m.caption}</div>`;
+    } else {
+      mediaDiv.innerHTML = `<img src="${m.url}" alt="${m.alt}" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="q-media-caption">${m.caption}</div>`;
+    }
+  } else {
+    mediaDiv.style.display = 'none';
+  }
+
+  const diff = document.getElementById('q-diff');
+  diff.textContent = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
+  diff.className = `diff-badge diff-${q.difficulty}`;
+
+  document.getElementById('q-text').textContent = q.q;
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-label">${labels[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  if (answered) return;
+  answered = true;
+
+  const q = shuffled[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  const pts = q.difficulty === 'easy' ? 4 : q.difficulty === 'medium' ? 5 : 7;
+
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.a) btn.classList.add('correct');
+    else if (i === chosen && chosen !== q.a) btn.classList.add('wrong');
+    else btn.classList.add('reveal');
+  });
+
+  const fb = document.getElementById('feedback');
+  if (chosen === q.a) {
+    score += pts;
+    correct++;
+    fb.className = 'feedback correct';
+    fb.innerHTML = `<span class="feedback-emoji">✅</span><strong>Correct! +${pts} points</strong><br>${q.fact}`;
+  } else {
+    wrong++;
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `<span class="feedback-emoji">❌</span><strong>Not quite!</strong> The correct answer is <strong>${q.opts[q.a]}</strong>.<br>${q.fact}`;
+  }
+  fb.style.display = 'block';
+  document.getElementById('btn-next').style.display = 'block';
+  document.getElementById('score-live').textContent = `Score: ${score}`;
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= shuffled.length) {
+    showResults();
+  } else {
+    renderQuestion();
+    window.scrollTo(0,0);
+  }
+}
+
+function showResults() {
+  showScreen('screen-results');
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const pct = Math.round((correct / shuffled.length) * 100);
+  const cappedScore = Math.min(score, 100);
+
+  document.getElementById('result-name').textContent = `${playerName} 🎉`;
+  document.getElementById('result-score-big').textContent = cappedScore;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-pct').textContent = pct + '%';
+
+  let trophy, msg;
+  if (pct >= 90) {
+    trophy = '🏆'; msg = "Outstanding! You're a 2SLGBTQIA+ knowledge champion! 🌈 Your score qualifies you for the top prize tier — share your code below!";
+  } else if (pct >= 70) {
+    trophy = '🥇'; msg = "Excellent work! You clearly know your 2SLGBTQIA+ history and culture. A strong finish — share your score!";
+  } else if (pct >= 50) {
+    trophy = '🥈'; msg = "Great effort! You've got solid knowledge across the board. Keep learning and play again to climb the leaderboard!";
+  } else if (pct >= 30) {
+    trophy = '🥉'; msg = "Good start! There's so much rich history to explore. Give it another try — you might surprise yourself!";
+  } else {
+    trophy = '💜'; msg = "Every expert starts somewhere! The questions cover global history, law, and culture — play again and see your score climb. 🌍";
+  }
+
+  document.getElementById('result-trophy').textContent = trophy;
+  document.getElementById('result-message').textContent = msg;
+
+  const code = `${playerName.substring(0,3).toUpperCase().replace(/[^A-Z]/g,'X')}-${cappedScore}-${correct}C${wrong}W-PRIDE26`;
+  document.getElementById('share-code').textContent = code;
+
+  // Auto-submit score
+  document.getElementById('submit-status').textContent = '⏳ Recording your score...';
+  submitScore(playerName, playerEmail, cappedScore, correct, wrong, pct, code);
+
+  launchConfetti();
+}
+
+function resetGame() {
+  document.getElementById('player-name').value = playerName;
+  startGame();
+}
+
+
+  const FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSd1t5dkoQSmG24WLXnLvXbZ4P1jIHiqzey_7HwPXu2jJS99Ow/formResponse";
+  const FORM_FIELDS = {
+    name:      "entry.1109818469",
+    email:     "entry.1429613706",
+    score:     "entry.1395824063",
+    correct:   "entry.1650677692",
+    incorrect: "entry.1082886885",
+    accuracy:  "entry.1415914634",
+    code:      "entry.535674740"
+  };
+
+  function submitScore(name, email, score, correct, incorrect, accuracy, code) {
+    // Build pre-filled form URL and open in new tab — most reliable cross-origin approach
+    const prefill = FORM_ACTION.replace('/formResponse', '/viewform?usp=pp_url')
+      + '&' + FORM_FIELDS.name + '=' + encodeURIComponent(name)
+      + '&' + FORM_FIELDS.email + '=' + encodeURIComponent(email)
+      + '&' + FORM_FIELDS.score + '=' + encodeURIComponent(score)
+      + '&' + FORM_FIELDS.correct + '=' + encodeURIComponent(correct)
+      + '&' + FORM_FIELDS.incorrect + '=' + encodeURIComponent(incorrect)
+      + '&' + FORM_FIELDS.accuracy + '=' + encodeURIComponent(accuracy + '%')
+      + '&' + FORM_FIELDS.code + '=' + encodeURIComponent(code);
+
+    document.getElementById('submit-status').innerHTML =
+      '📋 <strong>One more step!</strong> Click the button below to submit your score to the official leaderboard.';
+    document.getElementById('submit-status').style.color = '#fbbf24';
+    document.getElementById('submit-btn').style.display = 'inline-block';
+    document.getElementById('submit-btn').onclick = function() {
+      window.open(prefill, '_blank');
+      document.getElementById('submit-status').innerHTML = '✅ Score form opened! Fill in your details and hit Submit to be added to the leaderboard.';
+      document.getElementById('submit-status').style.color = '#4ade80';
+      document.getElementById('submit-btn').textContent = '✅ Submitted!';
+      document.getElementById('submit-btn').disabled = true;
+    };
+  }
+
+initStars();
+</script>
+</body>
+</html>
