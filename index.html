@@ -342,16 +342,32 @@
 
 
   /* QUESTION MEDIA */
-    .q-media {
-    width: 100%; height: 220px; overflow: hidden;
-    border-radius: 16px; margin-bottom: 20px;
-    background: rgba(0,0,0,0.3);
-    display: flex; align-items: center; justify-content: center;
+  
+
+
+  /* RESULTS GALLERY */
+  .results-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 24px 0;
+    border-radius: 16px;
+    overflow: hidden;
   }
 
-  .q-media img {
-    width: 100%; height: 100%; object-fit: cover;
-    object-position: center top; border-radius: 16px; display: block;
+  .gallery-img {
+    width: 100%; aspect-ratio: 4/3;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.3s ease;
+    cursor: default;
+  }
+
+  .gallery-img:hover { transform: scale(1.05); z-index: 1; position: relative; }
+
+  @media (max-width: 500px) {
+    .results-gallery { grid-template-columns: repeat(3, 1fr); }
   }
 
   @media (max-width: 500px) {
@@ -360,9 +376,13 @@
     .card { padding: 24px; }
   }
 </style>
+<!-- v1782744167g -->
 <!-- v1782503284z -->
+<!-- v1782744167g -->
 <!-- v1782502954x -->
+<!-- v1782744167g -->
 <!-- v1782503284z -->
+<!-- v1782744167g -->
 <!-- v1782502920 -->
 </head>
 <body>
@@ -420,7 +440,6 @@
         <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
       </div>
 
-      <div class="q-media" id="q-media" style="display:none"></div>
       <div class="q-category" id="q-category"></div>
       <div class="diff-badge" id="q-diff"></div>
       <div class="q-text" id="q-text"></div>
@@ -458,6 +477,28 @@
 
       <div class="result-message" id="result-message"></div>
 
+      <div class="results-gallery">
+        <img class="gallery-img" src="https://daily.jstor.org/wp-content/uploads/2019/06/the_stonewall_riots_didnt_start_the_gay_rights_movement_1050x700.jpg" alt="Pride history image 1" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://todaysfamilylawyer.co.uk/wp-content/uploads/2024/04/shutterstock_2155782025-1.jpg" alt="Pride history image 2" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://i.ebayimg.com/images/g/Z8YAAOSwZPxoG7aD/s-l1200.jpg" alt="Pride history image 3" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://psacunion.ca/sites/psac/files/acronymwebgraphic_0.png" alt="Pride history image 4" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://bostonglobe-prod.cdn.arcpublishing.com/resizer/v2/MFD4N7YE42E6PTYFNLGV32OQGU.jpg?auth=14e112d30719cc30c24f78dbd35683b153a5165471dff80653f6bacc8cdf998e&width=1440" alt="Pride history image 5" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://hips.hearstapps.com/hmg-prod/images/gettyimages-1392246164-665775e602990.jpg?crop=1xw:1xh;center,top&resize=640:*" alt="Pride history image 6" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://pridevmc.org/wp-content/uploads/2026/05/IDAHOBIT-wordmark-scaled-1-1024x342.png" alt="Pride history image 7" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://ca-times.brightspotcdn.com/dims4/default/38a096d/2147483647/strip/true/crop/3770x2761+0+0/resize/1200x879!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fd2%2F8d%2Fc364fdae419baf5db50e56d3b429%2Fla-me-abcarian-gay-marriage.jpg" alt="Pride history image 8" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://images.squarespace-cdn.com/content/v1/6695d462be7e5f02e373715e/85ae29cc-0230-4ad2-bbd6-27a3336cd0bc/Humanizing+History+%E2%80%94+Bayard+Rustin+%E2%80%94+wide.jpg" alt="Pride history image 9" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyJvXmA1FqKe-SR9F4L9sbS-cMUMjlDUoIVIrSKlvhB3sW28vMXfWxFyPzXpBHY8bEjA&usqp=CAU" alt="Pride history image 10" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://ichef.bbci.co.uk/news/480/cpsprodpb/302C/production/_129223321_gettyimages-1248299160.jpg.webp" alt="Pride history image 11" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://www.facinghistory.org/sites/default/files/styles/standard_hero_article_4_3/public/2022-05/PinkTriangle_GettyImages-3322881.jpg" alt="Pride history image 12" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://www.northwestharvest.org/wp-content/uploads/audre-lorde-web.png" alt="Pride history image 13" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://cdn2.psychologytoday.com/assets/styles/manual_crop_1_91_1_1528x800/public/teaser_image/blog_entry/2023-07/shutterstock_1914658384.jpg?itok=JixsSo6f" alt="Pride history image 14" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://images.squarespace-cdn.com/content/v1/5df0107f7584f70822b2abe6/fad21529-479a-41e7-9fa5-d5dd97cb9310/20AE2AFE-3E71-4A8C-8B55-0E7B6FF885D5.jpeg" alt="Pride history image 15" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://i.insider.com/5ce7eca3f2f47938d30d9629?width=700" alt="Pride history image 16" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://payload.cargocollective.com/1/17/575492/13978504/IMG_4344-copia_1250.jpg" alt="Pride history image 17" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://assets.teenvogue.com/photos/60b8f56eb247acb9c69cbbc6/16:9/w_2560%2Cc_limit/GettyImages-1206184404.jpg" alt="Pride history image 18" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT421ucKG8NLaZSYPXFf_OoX9vxYhqTr_ZmPu-xJcSb99OwnsBUq8g2m0mcWNBKiJc78Q&usqp=CAU" alt="Pride history image 19" loading="lazy" onerror="this.style.display='none'">
+        <img class="gallery-img" src="https://media.them.us/photos/5c0fe5bfe031590d39436cb2/4:3/w_1439,h_1080,c_limit/Two%20Spirit%20Header.jpg" alt="Pride history image 20" loading="lazy" onerror="this.style.display='none'">
+      </div>
       <div class="share-section">
         <div class="share-label">Your score has been submitted to the leaderboard</div>
         <div id="submit-status" style="font-size:13px;color:#fbbf24;margin-bottom:10px">⏳ Preparing your score submission...</div>
@@ -878,15 +919,7 @@ function renderQuestion() {
   document.getElementById('progress-fill').style.width = `${(currentQ/shuffled.length)*100}%`;
   document.getElementById('q-category').textContent = q.category;
 
-  // Render media using original question index
-  const mediaDiv = document.getElementById('q-media');
-  const m = QUESTION_MEDIA[q._origIdx !== undefined ? q._origIdx : currentQ];
-  if (m) {
-    mediaDiv.style.display = 'flex';
-    mediaDiv.innerHTML = `<img src="${m.url}" alt="${m.alt || ''}" loading="lazy" onerror="this.parentElement.style.display='none'" style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:16px;">`;
-  } else {
-    mediaDiv.style.display = 'none';
-  }
+
 
   const diff = document.getElementById('q-diff');
   diff.textContent = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
